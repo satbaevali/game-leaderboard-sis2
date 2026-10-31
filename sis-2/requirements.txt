@@ -1,0 +1,9 @@
+django
+uvicorn
+redis
+psycopg[binary]
+psycopg_pool
+grpcio
+grpcio-tools
+httpx
+pytest

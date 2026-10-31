@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package leaderboard.v1;
+
+// Internal API: game servers report match results.
+// Public reads (top / rank / around) are REST, see app/http_api.py.
+service ScoreService {
+  rpc SubmitScore(SubmitScoreRequest) returns (SubmitScoreResponse);
+}
+
+message SubmitScoreRequest {
+  string match_id = 1;          // idempotency key: created ONCE per match, reused on every retry
+  int64 player_id = 2;
+  int32 season_id = 3;
+  int64 score = 4;
+  int64 match_started_at = 5;   // unix seconds
+}
+
+message SubmitScoreResponse {
+  bool improved = 1;            // true when this score became the new personal best
+  int64 best_score = 2;
+  int64 rank = 3;               // 1 = best, 0 = unknown yet (index will catch up)
+  bool duplicate = 4;           // true when this match_id was already processed
+}
